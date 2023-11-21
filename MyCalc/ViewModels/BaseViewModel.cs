@@ -1,25 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MyCalc.Model;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using MyCalc.Model;
+using System.Windows.Media.Animation;
 
 namespace MyCalc.ViewModels
 {
-    public class BaseViewModel: INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged
     {
-        public BaseViewModel() 
+        public BaseViewModel()
         {
             Number = "0";
             Expresion = string.Empty;
         }
 
         #region Propertyes
+
+        private bool lastButtonIsOper;
+        private bool lastButtonIsCalculate;
 
         private string number;
 
@@ -28,7 +27,7 @@ namespace MyCalc.ViewModels
             get => number;
             set
             {
-                if (number == "0" && value != "0" && value !="0,")
+                if (number == "0" && value != "0" && value != "0,")
                 {
                     number = value[1..];
                     OnPropertyChanged(nameof(Number));
@@ -37,8 +36,8 @@ namespace MyCalc.ViewModels
 
                 number = value;
                 OnPropertyChanged(nameof(Number));
-                
-                
+
+
             }
         }
 
@@ -58,28 +57,194 @@ namespace MyCalc.ViewModels
 
         #region Commands
 
+        private void SqrtX()
+        {
+            var val = double.Parse(Number);
+
+            var res = Math.Sqrt(val);
+
+            Number = res.ToString();
+            Expresion = string.Empty;
+        }
+
+        private RelayCommand sqrtXCommand;
+
+        public RelayCommand SqrtXCommand
+        {
+            get
+            {
+                return sqrtXCommand ?? new RelayCommand(obj => 
+                { 
+                    SqrtX();
+                });
+            }
+        }
+
+        private void Pow2()
+        {
+            double value = double.Parse(Number);
+
+            Expresion = Number + '×' + Number + '=' ;
+            Number = (value*value).ToString();
+        }
+
+        private RelayCommand pow2Command;
+
+        public RelayCommand Pow2Command
+        {
+            get
+            {
+                return pow2Command ?? new RelayCommand(obj => 
+                {
+                    Pow2();
+                });
+            }
+        }
+
+        private void DivideOnNumber()
+        {
+            if(Number != "0")
+            {
+                double res = 1d / double.Parse(Number);
+
+                Expresion = "1÷" + Number+'='; 
+                Number = res.ToString();
+            }
+        }
+
+        private RelayCommand divideOneOnNumberCommand;
+
+        public RelayCommand DivideOneOnNumberCommand
+        {
+            get
+            {
+                return divideOneOnNumberCommand ?? new RelayCommand(obj => 
+                {
+                    DivideOnNumber();
+                });
+            }
+        }
+
+        private void CalculateExpression()
+        {
+            try
+            {
+                int indexOperation = Expresion.IndexOfAny(new char[] { '+', '-', '×', '÷' }, 1);
+
+                double leftValue = 0;
+                double rightValue = 0;
+
+                if(lastButtonIsCalculate)
+                {
+                    leftValue = double.Parse(Number);
+                    rightValue = double.Parse(Expresion[(indexOperation+1) .. ^1]);    
+                }
+                else
+                {
+                    leftValue = double.Parse(Expresion[..indexOperation]);
+                    rightValue = double.Parse(Number);
+                }
+
+                double result = 0;
+
+                char operation = Expresion[indexOperation];
+
+                if (operation == '+')
+                {
+                    result = leftValue + rightValue;
+                }
+                else if (operation == '-')
+                {
+                    result = leftValue - rightValue;
+                }
+                else if (operation == '×')
+                {
+                    result = (double)leftValue * rightValue;
+                }
+                else
+                {
+                    result = (double)leftValue / rightValue;
+                }
+
+                result = Math.Round(result, 12);
+
+                Number = result.ToString();
+
+
+                Expresion = leftValue.ToString()+operation+rightValue.ToString()+'=';
+                
+
+                lastButtonIsCalculate = true;
+                lastButtonIsOper = false;
+
+            }
+            catch
+            {
+                MessageBox.Show("Что то с операцией", "Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private RelayCommand calculateExpressionCommand;
+
+        public RelayCommand CalculateExpressionCommand
+        {
+            get
+            {
+                return calculateExpressionCommand ?? new RelayCommand(obj =>
+                {
+                    CalculateExpression();
+                });
+            }
+        }
+
+        private void SimpleOperation(object obj)
+        {
+            if (obj is Button btn)
+            {
+                var content = btn.Content as TextBlock;
+
+                Expresion = Number + content.Text;
+                lastButtonIsOper = true;
+                lastButtonIsCalculate = false;
+            }
+        }
+
+        private RelayCommand simpleOperationCommand;
+
+        public RelayCommand SimpleOperationCommand
+        {
+            get
+            {
+                return simpleOperationCommand ?? new RelayCommand(obj =>
+                {
+                    SimpleOperation(obj);
+                });
+            }
+        }
 
         private RelayCommand clearAllNumberCommand;
 
         public RelayCommand ClearAllNumberCommand
         {
-            get 
+            get
             {
-                return clearAllNumberCommand ?? new RelayCommand(obj => 
+                return clearAllNumberCommand ?? new RelayCommand(obj =>
                 {
                     Action<object> clear = (object a) => Number = "0";
+                    Action<object> clear1 = (object a) => Expresion = string.Empty;
                     clear.Invoke(null);
+                    clear1.Invoke(null);
                 });
             }
         }
 
         private void ReverseNumber()
         {
-            if(Number != "0")
+            if (Number != "0")
             {
-                if(double.Parse(Number)>0)
+                if (double.Parse(Number) > 0)
                 {
-                    Number = '-'+Number;
+                    Number = '-' + Number;
                 }
                 else
                 {
@@ -94,8 +259,8 @@ namespace MyCalc.ViewModels
         {
             get
             {
-                return reverseNumberCommand ?? new RelayCommand(obj => 
-                { 
+                return reverseNumberCommand ?? new RelayCommand(obj =>
+                {
                     ReverseNumber();
                 });
             }
@@ -103,7 +268,7 @@ namespace MyCalc.ViewModels
 
         private void ClearLastSymbol()
         {
-            if(Number.Length == 1 || Number.Length == 2 && Number.StartsWith('-'))
+            if (Number.Length == 1 || Number.Length == 2 && Number.StartsWith('-'))
             {
                 Number = "0";
             }
@@ -111,7 +276,7 @@ namespace MyCalc.ViewModels
             {
                 Number = Number[..^1];
             }
-            
+
         }
 
         private RelayCommand clearLastSymbolCommand;
@@ -120,7 +285,7 @@ namespace MyCalc.ViewModels
         {
             get
             {
-                return clearLastSymbolCommand ?? new RelayCommand(obj => 
+                return clearLastSymbolCommand ?? new RelayCommand(obj =>
                 {
                     ClearLastSymbol();
                 });
@@ -130,7 +295,7 @@ namespace MyCalc.ViewModels
         #region WindowCommand
         private void MaximizeWindow()
         {
-            if(Application.Current.MainWindow.WindowState == WindowState.Normal)
+            if (Application.Current.MainWindow.WindowState == WindowState.Normal)
             {
                 Application.Current.MainWindow.WindowState = WindowState.Maximized;
             }
@@ -146,8 +311,8 @@ namespace MyCalc.ViewModels
         {
             get
             {
-                return maximizeWindowCommand ?? new RelayCommand(obj => 
-                { 
+                return maximizeWindowCommand ?? new RelayCommand(obj =>
+                {
                     MaximizeWindow();
                 });
             }
@@ -155,7 +320,7 @@ namespace MyCalc.ViewModels
 
         private void MinimizeWindow()
         {
-            if(Application.Current.MainWindow.WindowState == WindowState.Normal ||
+            if (Application.Current.MainWindow.WindowState == WindowState.Normal ||
                Application.Current.MainWindow.WindowState == WindowState.Maximized)
             {
                 Application.Current.MainWindow.WindowState = WindowState.Minimized;
@@ -191,8 +356,8 @@ namespace MyCalc.ViewModels
         {
             get
             {
-                return closeAppCommand ?? new RelayCommand(obj => 
-                { 
+                return closeAppCommand ?? new RelayCommand(obj =>
+                {
                     CloseApp();
                 });
             }
@@ -201,12 +366,22 @@ namespace MyCalc.ViewModels
 
         private void ClickOnNumber(object number)
         {
-            if(number is Button btn)
+            if (number is Button btn)
             {
                 TextBlock textBlock = btn.Content as TextBlock;
-                if (textBlock != null) 
+                if (textBlock != null)
                 {
-                    Number += textBlock.Text;
+                    if (lastButtonIsOper)
+                    {
+                        Number = textBlock.Text;
+                    }
+                    else
+                    {
+                        Number += textBlock.Text;
+                    }
+
+                    lastButtonIsOper = false;
+                    lastButtonIsCalculate = false;
                 }
             }
         }
@@ -226,7 +401,7 @@ namespace MyCalc.ViewModels
 
         private bool CanClickOnComma()
         {
-            if(Number.Contains(",") || (Number.Length<2 && Number.StartsWith('-')))
+            if (Number.Contains(",") || (Number.Length < 2 && Number.StartsWith('-')))
             {
                 return false;
             }
@@ -242,8 +417,8 @@ namespace MyCalc.ViewModels
             {
                 return clickOnCommaCommand ?? new RelayCommand(obj =>
                 {
-                    ClickOnNumber(obj);            
-                },obj => CanClickOnComma());
+                    ClickOnNumber(obj);
+                }, obj => CanClickOnComma());
             }
         }
 
@@ -252,7 +427,7 @@ namespace MyCalc.ViewModels
         #region INPC
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public void OnPropertyChanged([CallerMemberName] string property="")
+        public void OnPropertyChanged([CallerMemberName] string property = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }

@@ -33,8 +33,23 @@ namespace MyCalc.Views
         {
             double appHeight = this.Height;
 
-            NumberTB.FontSize = appHeight/30;
-            ExpressionTB.FontSize = appHeight/30;
+            NumberTB.FontSize = appHeight/20;
+            ExpressionTB.FontSize = appHeight/50;
+
+            double appWidth = this.Width;
+
+            if(appWidth>850)
+            {
+                HistoryColumn.Width = new GridLength((appWidth * 2) / 5);
+                MainColumn.Width = new GridLength((appWidth * 3) / 5);
+                HeadGrid.Width = appWidth - 25;
+            }
+            else
+            {
+                MainColumn.Width = new GridLength(appWidth-15);
+                HistoryColumn.Width = new GridLength(0);
+                HeadGrid.Width = appWidth - 13;
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
