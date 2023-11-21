@@ -8,4 +8,30 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Views\Images\ButtonImages\CancelMove.png" />
+    <None Remove="Views\Images\ButtonImages\DivideX.png" />
+    <None Remove="Views\Images\ButtonImages\KorenX.png" />
+    <None Remove="Views\Images\ButtonImages\PlusAndMinus.png" />
+    <None Remove="Views\Images\ButtonImages\XSquare.png" />
+    <None Remove="Views\Images\Head\CalcIcon.png" />
+    <None Remove="Views\Images\Head\Exit.png" />
+    <None Remove="Views\Images\Head\MaximizeScreen.png" />
+    <None Remove="Views\Images\Head\Minimize.png" />
+    <None Remove="Views\Images\Head\NormalScreen.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Images\ButtonImages\CancelMove.png" />
+    <Resource Include="Views\Images\ButtonImages\DivideX.png" />
+    <Resource Include="Views\Images\ButtonImages\KorenX.png" />
+    <Resource Include="Views\Images\ButtonImages\PlusAndMinus.png" />
+    <Resource Include="Views\Images\ButtonImages\XSquare.png" />
+    <Resource Include="Views\Images\Head\CalcIcon.png" />
+    <Resource Include="Views\Images\Head\Exit.png" />
+    <Resource Include="Views\Images\Head\MaximizeScreen.png" />
+    <Resource Include="Views\Images\Head\Minimize.png" />
+    <Resource Include="Views\Images\Head\NormalScreen.png" />
+  </ItemGroup>
+
 </Project>
