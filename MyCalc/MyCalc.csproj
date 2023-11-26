@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <None Remove="Views\Images\ButtonImages\CancelMove.png" />
+    <None Remove="Views\Images\ButtonImages\Clear.png" />
     <None Remove="Views\Images\ButtonImages\DivideX.png" />
     <None Remove="Views\Images\ButtonImages\KorenX.png" />
     <None Remove="Views\Images\ButtonImages\PlusAndMinus.png" />
@@ -23,6 +24,7 @@
 
   <ItemGroup>
     <Resource Include="Views\Images\ButtonImages\CancelMove.png" />
+    <Resource Include="Views\Images\ButtonImages\Clear.png" />
     <Resource Include="Views\Images\ButtonImages\DivideX.png" />
     <Resource Include="Views\Images\ButtonImages\KorenX.png" />
     <Resource Include="Views\Images\ButtonImages\PlusAndMinus.png" />

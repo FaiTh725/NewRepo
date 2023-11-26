@@ -1,0 +1,91 @@
+﻿<Window x:Class="BinnaryTreeSort.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BinnaryTreeSort.View"
+        xmlns:viewModel="clr-namespace:BinnaryTreeSort.ViewModel"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" MinWidth="100" MinHeight="100" MaxWidth="1920" MaxHeight="1080" WindowStyle="None">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="\Resourses\MainWindowRsourses.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <viewModel:BaseViewModel x:Name="baseViewModel"/>
+    </Window.DataContext>
+
+    <Grid Background="#49d16d">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition/>
+            <RowDefinition Height="70"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="30"/>
+            
+            </Grid.ColumnDefinitions>
+            
+            <Image/>
+
+            <TextBlock Text="Сортировка бинарным деревом" Style="{StaticResource CommonTextBlock}" Grid.Column="1" FontSize="16"/>
+
+            <Button Command="{Binding CloseAppCommand}" Grid.Column="4" Style="{StaticResource HeadButtonExit}">
+                <Image  Source="\View\Images\HeadWindow\Exit.png"/>
+            </Button>
+            <Button Command="{Binding MaximizeAppCommand}" Click="Button_Click" Grid.Column="3" Style="{StaticResource HeadButton}">
+                <Image x:Name="maximizeBtn" Source="\View\Images\HeadWindow\MaximizeScreen.png"/>
+            </Button>
+            <Button Command="{Binding MinimizeAppCommand}" Grid.Column="2" Style="{StaticResource HeadButton}">
+                <Image Source="\View\Images\HeadWindow\Minimize.png"/>
+            </Button>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBox Text="{Binding AddValue}" Style="{StaticResource CommonTextBox}" Height="40"/>
+
+            <Button Command="{Binding AddNodeCommand}" CommandParameter="{Binding ElementName=CanvasDrawTree}" Grid.Column="1" Content="Добавить" Style="{StaticResource CommonButton}" HorizontalAlignment="Left" HorizontalContentAlignment="Center" Width="120" />
+
+            <Button Command="{Binding ClearTreeCommand}" CommandParameter="{Binding ElementName=CanvasDrawTree}" Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" Margin="0,0,20,0" Style="{StaticResource CommonButton}" Content="Очистить"/>
+        </Grid>
+        
+        <ScrollViewer x:Name="Show" Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Canvas x:Name="CanvasDrawTree" IsEnabled="True" Background="Transparent" >
+                
+            </Canvas>
+        </ScrollViewer>
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="{Binding SortedArrayString}" Style="{StaticResource CommonTextBlock}" FontSize="17"/>
+            <Button Command="{Binding GetSortedArrayCommand}" Grid.Column="1" Content="Отсортировать" Style="{StaticResource CommonButton}" Height="40" Width="100"/>
+        </Grid>
+
+    </Grid>
+</Window>

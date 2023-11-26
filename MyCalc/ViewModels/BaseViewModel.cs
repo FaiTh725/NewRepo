@@ -1,4 +1,5 @@
 ﻿using MyCalc.Model;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -13,12 +14,38 @@ namespace MyCalc.ViewModels
         {
             Number = "0";
             Expresion = string.Empty;
+            historyItems = new ObservableCollection<HistoryItem>();
+            HistoryMessage = "Тут пока пусто";
         }
 
         #region Propertyes
 
         private bool lastButtonIsOper;
         private bool lastButtonIsCalculate;
+
+        private string historyMessage;
+
+        public string HistoryMessage
+        {
+            get => historyMessage; 
+            set
+            {
+                historyMessage = value;
+                OnPropertyChanged(nameof(HistoryMessage));
+            }
+        }
+
+        private ObservableCollection<HistoryItem> historyItems;
+
+        public ObservableCollection<HistoryItem> HistoryItems
+        {
+            get => historyItems;
+            set
+            {
+                historyItems = value;
+                OnPropertyChanged("HistoryItems");
+            }
+        }
 
         private string number;
 
@@ -56,6 +83,39 @@ namespace MyCalc.ViewModels
         #endregion
 
         #region Commands
+
+        /*private void SelectHistory(object? selectedIndex)
+        {
+            
+        }
+
+        private RelayCommand selecteHistoryCommand;
+
+        public RelayCommand SelecteHistoryCommand
+        {
+            get
+            {
+                return selecteHistoryCommand ?? new RelayCommand(obj =>
+                {
+                    SelectHistory(obj);
+                });
+            }
+        }*/
+
+        private RelayCommand clearHistoryCommand;
+
+        public RelayCommand ClearHistoryCommand
+        {
+            get
+            {
+                return clearHistoryCommand ?? new RelayCommand(obj => 
+                {
+                    Action<object> action = (object obj) => HistoryItems.Clear(); HistoryMessage = "Тут пока пусто" ;
+
+                    action.Invoke(null);
+                });
+            }
+        }
 
         private void SqrtX()
         {
@@ -177,6 +237,8 @@ namespace MyCalc.ViewModels
                 lastButtonIsCalculate = true;
                 lastButtonIsOper = false;
 
+                HistoryItems.Add(new HistoryItem(Expresion, Number));
+                HistoryMessage = string.Empty;
             }
             catch
             {
