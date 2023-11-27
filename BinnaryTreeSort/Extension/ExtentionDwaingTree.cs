@@ -1,5 +1,7 @@
 ﻿using BinnaryTreeSort.Model;
 using BinnaryTreeSort.Resourses;
+using System.Collections;
+using System.Collections.Immutable;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,9 +14,27 @@ namespace BinnaryTreeSort.Extension
     {
         public static string SorteArray(this DrawingTree tree, Canvas canvas)
         {
-            string res = "";
-
             
+            string res = "";
+            Sorte();
+
+            async void Sorte()
+            {
+                List<double?> sortedList = tree.GetSortedList();
+
+                while (sortedList.Count >0)
+                {
+                    DrawingNode drawingNode = FindNodeInCanvas(canvas, sortedList[0]);
+                    drawingNode.BackGroundEllipse = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#c844e3"));
+                    
+                    await Task.Delay(500);
+                    
+                    res += drawingNode.Text + " ";
+                    
+                    sortedList.RemoveAt(0);
+
+                }
+            }
 
             return res;
 

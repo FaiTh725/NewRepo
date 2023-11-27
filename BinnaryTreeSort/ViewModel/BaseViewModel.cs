@@ -94,22 +94,17 @@ namespace BinnaryTreeSort.ViewModel
 
         #region Commands
 
-        private void SorteArray(object obj)
+        private async void SorteArray(object obj)
         {
             if(obj is Canvas canvas)
             {
-                //SortedArrayString = binnaryTree.SorteArray(canvas);
-
-                List<double?> sortedArr = binnaryTree.GetSortedList();
-
-                foreach(var item in sortedArr)
-                {
-                    SearchValue = item.Value;
-                    SortedArrayString+=item.Value.ToString()+" ";
-                    SearchNode(canvas);
-                    //Thread.Sleep(100);
-                }
+                
+                SortedArrayString = binnaryTree.SorteArray(canvas);
+              
             }
+
+            await Task.Delay(600 * binnaryTree.GetSortedList().Count);
+            ClearTree(obj as Canvas);
         }
 
         private RelayCommand sorteArrayCommand;
