@@ -51,7 +51,6 @@ namespace BinnaryTreeSort.Model
 
         public void Remove(double? value)
         {
-
             Root = Remove(Root, new Node(value));
         }
 
@@ -104,7 +103,7 @@ namespace BinnaryTreeSort.Model
             {
                 return root;
             }
-            return root.Value < value ? Search(root.Right, value) : Search(root.Left, value);
+            return value>root.Value ? Search(root.Right, value) : Search(root.Left, value);
         }
 
         public Node GetMin()

@@ -224,6 +224,7 @@ namespace BinnaryTreeConsole
             }
         }
 
+        
         public void Print()
         {
             Print(Root);
@@ -283,16 +284,7 @@ namespace BinnaryTreeConsole
             tree.Add(3);
             //tree.Add(6);
 
-            //tree.Wide();
-            tree.Print();
-            //Console.WriteLine(tree.Search(23).Value);
-            Console.WriteLine();
-            /*var list = tree.GetSortedList();
-
-            foreach (var i in list)
-            {
-                Console.WriteLine(i);
-            }*/
+            Console.WriteLine(tree.Search(44).Value);
         }
     }
 }

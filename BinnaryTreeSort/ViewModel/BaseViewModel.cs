@@ -9,6 +9,9 @@ using System.Windows;
 using System.Windows.Controls;
 using BinnaryTreeSort.Model;
 using BinnaryTreeSort.Extension;
+using System.Security.Permissions;
+using BinnaryTreeSort.Resourses;
+using System.Windows.Media;
 
 namespace BinnaryTreeSort.ViewModel
 {
@@ -22,6 +25,32 @@ namespace BinnaryTreeSort.ViewModel
 
         #region Propertyes
 
+
+
+        private string errorMessage;
+
+        public string ErrorMessage
+        {
+            get => errorMessage;
+            set
+            {
+                errorMessage = value;
+                OnPropertyChanged(nameof(ErrorMessage));
+            }
+        }
+
+        private double? searchValue;
+
+        public double? SearchValue
+        {
+            get=> searchValue;
+            set
+            {
+                searchValue = value;
+                OnPropertyChanged(nameof(SearchValue));
+            }
+        }
+
         private string sortedArrayString;
 
         public string SortedArrayString
@@ -34,9 +63,22 @@ namespace BinnaryTreeSort.ViewModel
             }
         }
 
-        private double addValue;
+        private double? removeValue;
 
-        public double AddValue
+        public double? RemoveValue
+        {
+            get => removeValue;
+
+            set
+            {
+                removeValue = value;
+                OnPropertyChanged(nameof(RemoveValue));
+            }
+        }
+
+        private double? addValue;
+
+        public double? AddValue
         {
             get => addValue;
             set
@@ -52,12 +94,80 @@ namespace BinnaryTreeSort.ViewModel
 
         #region Commands
 
+        private void SorteArray(object obj)
+        {
+            if(obj is Canvas canvas)
+            {
+                //SortedArrayString = binnaryTree.SorteArray(canvas);
+
+                List<double?> sortedArr = binnaryTree.GetSortedList();
+
+                foreach(var item in sortedArr)
+                {
+                    SearchValue = item.Value;
+                    SortedArrayString+=item.Value.ToString()+" ";
+                    SearchNode(canvas);
+                    //Thread.Sleep(100);
+                }
+            }
+        }
+
+        private RelayCommand sorteArrayCommand;
+
+        public RelayCommand SorteArrayCommand
+        {
+            get
+            {
+                return sorteArrayCommand ?? new RelayCommand(obj => 
+                {
+                    SorteArray(obj);
+                });
+            }
+        }
+
+        private void SearchNode(object obj)
+        {
+            if(SearchValue == null)
+            {
+                ErrorMessage = "Поле поиска пустое";
+                return;
+            }
+
+            if(obj is Canvas canvas)
+            {
+                foreach(var item in canvas.Children)
+                {
+                    if (item is DrawingNode node)
+                    {
+                        node.BackGroundEllipse = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#09521c"));
+                    }
+                }
+
+                binnaryTree.SearchNode(canvas, SearchValue);
+                SearchValue = null;
+            }
+        }
+
+        private RelayCommand searchNodeCommand;
+
+        public RelayCommand SearchNodeCommand
+        {
+            get
+            {
+                return searchNodeCommand ?? new RelayCommand(obj => 
+                {
+                    SearchNode(obj);
+                });
+            }
+        }
+
         private void ClearTree(object obj)
         {
             if(obj is Canvas canvas)
             {
                 binnaryTree.Clear();
                 SortedArrayString = "";
+                ErrorMessage = string.Empty;
                 canvas.Children.Clear();    
             }
             
@@ -76,17 +186,35 @@ namespace BinnaryTreeSort.ViewModel
             }
         }
 
-        private RelayCommand getSortedArrayCommand;
 
-        public RelayCommand GetSortedArrayCommand
+        private void RemoveNode(object obj)
+        {
+            if (RemoveValue == null)
+            {
+                ErrorMessage = "В поле удаления пусто";
+                return;
+            }
+            if(obj is Canvas canvas)
+            {
+
+                binnaryTree.Remove(RemoveValue);
+                canvas.Children.Clear();
+                binnaryTree.DrawTree(canvas);
+                
+                RemoveValue = null;
+                ErrorMessage = null;
+            }
+        }
+
+        private RelayCommand removeNodeCommand;
+
+        public RelayCommand RemoveNodeCommand
         {
             get
             {
-                return getSortedArrayCommand ?? new RelayCommand(obj => 
+                return removeNodeCommand ?? new RelayCommand(obj => 
                 {
-                    Action act = () => { SortedArrayString = ""; };
-
-                    act();
+                    RemoveNode(obj);        
                 });
             }
         }
@@ -95,9 +223,22 @@ namespace BinnaryTreeSort.ViewModel
         {
             if (obj is Canvas canvas)
             {
-                binnaryTree.Add(AddValue);
-                AddValue = 0;
-                binnaryTree.DrawTree(canvas);
+                if (AddValue == null)
+                {
+                    ErrorMessage = "Поле ввода пустое";
+                    return;
+                }
+                try
+                {
+                    binnaryTree.Add(AddValue);
+                    AddValue = null;
+                    binnaryTree.DrawTree(canvas);
+                    ErrorMessage = string.Empty;
+                }
+                catch(ArgumentException e)
+                {
+                    ErrorMessage = e.Message;
+                }
             }
         }
 

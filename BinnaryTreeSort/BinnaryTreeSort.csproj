@@ -13,6 +13,7 @@
     <None Remove="View\Images\HeadWindow\MaximizeScreen.png" />
     <None Remove="View\Images\HeadWindow\Minimize.png" />
     <None Remove="View\Images\HeadWindow\NormalScreen.png" />
+    <None Remove="View\Images\HeadWindow\Tree.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +25,9 @@
     <Resource Include="View\Images\HeadWindow\MaximizeScreen.png" />
     <Resource Include="View\Images\HeadWindow\Minimize.png" />
     <Resource Include="View\Images\HeadWindow\NormalScreen.png" />
+    <Resource Include="View\Images\HeadWindow\Tree.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

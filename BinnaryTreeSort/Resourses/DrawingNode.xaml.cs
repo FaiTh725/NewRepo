@@ -26,15 +26,15 @@ namespace BinnaryTreeSort.Resourses
             }
         }
 
-        private SolidColorBrush backGround;
+        private SolidColorBrush backGroundEllipse;
 
-        public SolidColorBrush BackGround
+        public SolidColorBrush BackGroundEllipse
         {
-            get => backGround;
+            get => backGroundEllipse;
             set
             {
-                backGround = value;
-                el.Fill = backGround;
+                backGroundEllipse = value;
+                el.Fill = backGroundEllipse;
             }
         }
 
